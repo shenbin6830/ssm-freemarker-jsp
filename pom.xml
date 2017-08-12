@@ -13,7 +13,13 @@
 	</properties>
 
 	<dependencies>
-	<!-- mybatis逆向工程 -->
+	<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.2</version>
+		</dependency>
+		<!-- mybatis逆向工程 -->
 		<dependency>
 			<groupId>org.mybatis.generator</groupId>
 			<artifactId>mybatis-generator-core</artifactId>
