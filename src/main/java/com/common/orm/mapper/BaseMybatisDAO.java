@@ -61,7 +61,7 @@ public class BaseMybatisDAO {
 	public <T extends BaseEntity> PagingResult<T> findForPage(String countSqlId, String sqlId, Search search) {
 		RowBounds rowBounds = new RowBounds(search.getFirstRowNum(), search.getRows());
 		List<T> list = template.selectList(sqlId, getConditionMap(search), rowBounds);
-		return new PagingResult<>(count(countSqlId, search), list, search.getPage(), search.getRows());
+		return new PagingResult<T>(count(countSqlId, search), list, search.getPage(), search.getRows());
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class BaseMybatisDAO {
 	public <T extends BaseEntity> PagingResult<T> findForPage(String countSqlId, String sqlId, int page, int rows, Map<String, Object> params) {
 		RowBounds rowBounds = new RowBounds((page - 1) * rows, rows);
 		List<T> data = template.selectList(sqlId, params, rowBounds);
-		return new PagingResult<>(count(countSqlId, params), data, page, rows);
+		return new PagingResult<T>(count(countSqlId, params), data, page, rows);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class BaseMybatisDAO {
 	public <T extends BaseEntity> PagingResult<T> findForPageWithoutTotal(String sqlId, int page, int rows, Map<String, Object> params) {
 		RowBounds rowBounds = new RowBounds((page - 1) * rows, rows);
 		List<T> data = template.selectList(sqlId, params, rowBounds);
-		return new PagingResult<>(0, data, page, rows);
+		return new PagingResult<T>(0, data, page, rows);
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public class BaseMybatisDAO {
 	 * @return
 	 */
 	private Map<String, Object> getConditionMap(Search search) {
-		Map<String, Object> conditionMap = new HashMap<>();
+		Map<String, Object> conditionMap = new HashMap<String, Object>();
 		if (search.getConditionList() != null) {
 			for (Condition condition : search.getConditionList()) {
 				conditionMap.put(condition.getName(), condition.getValue());

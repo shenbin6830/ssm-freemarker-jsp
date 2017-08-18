@@ -1,101 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-<!-- 默认的注解映射的支持 -->
-    <mvc:annotation-driven />
+	<!-- 默认的注解映射的支持 -->
+	<mvc:annotation-driven />
 
-    <!-- 自动扫描的包名 -->
-    <context:component-scan base-package="com" />
-    <!-- 数据库配置文件 -->
-    <context:property-placeholder location="classpath:app.properties" />
-    <!-- 静态资源文件的访问 -->
-    <mvc:resources mapping="/resource/**" location="/resource/"
-        cache-period="31556926" />
-    
-    <!-- 配置数据源 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
-        init-method="init" destroy-method="close">
-        <!-- 基本属性 -->
-        <property name="url" value="${database.url}" />
-        <property name="username" value="${database.user}" />
-        <property name="password" value="${database.password}" />
+	<context:component-scan base-package="com" />
+	<!-- 数据库配置文件 -->
+	<context:property-placeholder location="classpath:app.properties" />
 
-        <!-- 配置初始化大小、最小、最大 -->
-        <property name="initialSize" value="1" />
-        <property name="minIdle" value="1" />
-        <property name="maxActive" value="20" />
+	<!-- 静态资源文件的访问 -->
+	<mvc:default-servlet-handler />
 
-        <!-- 配置获取连接等待超时的时间 -->
-        <property name="maxWait" value="60000" />
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 基本属性 -->
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.user}" />
+		<property name="password" value="${database.password}" />
 
-        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
-        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="20" />
 
-        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
-        <property name="minEvictableIdleTimeMillis" value="300000" />
-        <property name="validationQuery" value="SELECT 'x'" />
-        <property name="testWhileIdle" value="true" />
-        <property name="testOnBorrow" value="false" />
-        <property name="testOnReturn" value="false" />
-    </bean>
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+	</bean>
+
+	<!-- 配置myBatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 扫描sqlMap 自动配置 -->
+		<property name="mapperLocations" value="classpath*:com/common/orm/sqlmap/*.xml" />
+	</bean>
+	
+	    <!-- sqlSessionTemplate配置 -->  
+    <bean id="sqlSession"    class="org.mybatis.spring.SqlSessionTemplate">     
+        <constructor-arg index="0" ref="sqlSessionFactory" />     
+    </bean>    
     
-    <!-- 配置myBatis -->
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-        <!-- 扫描sqlMap 自动配置 -->
-        <property name="mapperLocations" value="classpath*:com/common/orm/sqlmap/*.xml" />
-    </bean>
-    
-    <!-- 自动注入dao -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.common.orm.mapper" />
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
-    </bean>
-    
-    <!--Jsp视图解析器-ViewResolver -->
-    <bean id="viewResolverJsp" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"/>  
-        <property name="suffix" value=".jsp"/>
-        <property name="order" value="1"/>
-    </bean>
-    
-    <!-- 配置freeMarker视图解析器 -->
-    <bean id="viewResolverFtl" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
-        <property name="contentType" value="text/html;charset=utf-8"/>
-        <property name="cache" value="true" />
-        <property name="suffix" value=".ftl" />
-        <property name="order" value="0"/>
-    </bean>
-    <bean id="freeMarkerConfigurer"
-        class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="/WEB-INF/ftl" />
-        <property name="freemarkerSettings">
-            <props>
-                <prop key="default_encoding">UTF-8</prop>
-                <prop key="url_escaping_charset">UTF-8</prop>
-                <prop key="template_update_delay">1</prop>
-                <prop key="tag_syntax">auto_detect</prop>
-                <prop key="whitespace_stripping">true</prop>
-                <prop key="classic_compatible">true</prop>
-                <prop key="number_format">0.##########</prop>
-                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
-                <prop key="template_exception_handler">ignore</prop>
-                <prop key="object_wrapper">freemarker.ext.beans.BeansWrapper</prop>
-            </props>
-        </property>
-        <!-- 自定义模板配置 -->
-         <property name="freemarkerVariables"> 
-            <map>
-                <entry key="xml_escape" value-ref="fmXmlEscape" />
-            </map>
-        </property>
-    </bean>
-     <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" /> 
+	<!-- 自动注入dao -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.common.orm.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+
 </beans>

@@ -30,7 +30,7 @@ public class DealDAO extends BaseMybatisDAO{
 
     //FIXME 只查8个就够了,如何实现?
     public List<Deal> getDealsForIndex(Long areaId, List<Long> categoryIds, int publishStatus) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("categoryIds", categoryIds);
         params.put("areaId", areaId);
         params.put("nowTime", new Date());
@@ -46,7 +46,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public PagingResult<Deal> getPageDealsForSearch(String name, int page, int rows) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", name);
         return this.findForPage(MAPPER_NAMESPACE + ".countPageDealsForSearch",
                 MAPPER_NAMESPACE + ".selectPageDealsForSearch", page, rows, params);
@@ -76,7 +76,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public List<Deal> getDealsForCart(List<Long> dealIds) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("dealIds", dealIds);
         return findAll(MAPPER_NAMESPACE + ".selectDealsForCart", params);
     }
@@ -137,7 +137,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public int modifyStatusById(Deal deal) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", deal.getId());
         params.put("publishStatus", deal.getPublishStatus());
 
@@ -186,7 +186,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public List<Deal> findBySkuIds(List<Long> skuIds) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("skuIds", skuIds);
         return findAll(MAPPER_NAMESPACE + ".selectBySkuIds", params);
     }
@@ -215,7 +215,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public long countByCategoryId(Long categoryId) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("categoryId", categoryId);
         return count(MAPPER_NAMESPACE + ".countByCategoryId", params);
     }
@@ -234,7 +234,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public Deal getByMerchantCode(String merchantCode) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("merchantCode", merchantCode);
         return findOne(MAPPER_NAMESPACE + ".selectByMerchantCode", params);
     }
@@ -260,7 +260,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public List<Deal> getByMerchantIdAndMerchantSku(Long merchantId, int merchantSku) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("merchantId", merchantId);
         params.put("merchantSku", merchantSku);
         return findAll(MAPPER_NAMESPACE + ".selectByMerchantIdAndMerchantSku", params);
@@ -274,7 +274,7 @@ public class DealDAO extends BaseMybatisDAO{
      * @return
      */
     public Deal getInfoForPlaceOrder(long id) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         Date nowDate = new Date();
         params.put("id", id);
         params.put("startTime", nowDate);

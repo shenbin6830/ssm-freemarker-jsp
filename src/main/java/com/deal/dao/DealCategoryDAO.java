@@ -38,7 +38,7 @@ public class DealCategoryDAO extends BaseMybatisDAO{
      * @return
      */
     public List<DealCategory> getDirectSubs(Long parentId) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("publishStatus", DealConstant.DEAL_PUBLISH_STATUS_DELETED);
         params.put("parentId", parentId);
         return findAll(MAPPER_NAMESPACE + ".selectDirectSubs", params);
@@ -106,7 +106,7 @@ public class DealCategoryDAO extends BaseMybatisDAO{
      * @return
      */
     public int getMaxOrderByParentId(Long parentId) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("parentId", parentId);
 //        Map<String, Object> data = findData(MAPPER_NAMESPACE + ".selectMaxOrderByParentId", params);
 //        if (data == null) {
@@ -130,7 +130,7 @@ public class DealCategoryDAO extends BaseMybatisDAO{
      * @return
      */
     public int swapOrder(Long id1, Long id2) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("id1", id1);
         params.put("id2", id2);
         return update(MAPPER_NAMESPACE + ".swapOrder", params);
